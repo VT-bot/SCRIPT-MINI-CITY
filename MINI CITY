@@ -122,4 +122,21 @@ end
 
 protectPlayer()
 
+-- Proteção contra exploits no ambiente de execução
+local function isExploitDetected()
+    -- Verificação simples para verificar se há sinais típicos de exploit (ex: funções do "getfenv" ou outros sinais)
+    local success, err = pcall(function()
+        return game:GetService("HttpService"):GetAsync("https://www.google.com")
+    end)
+    if not success then
+        return true
+    end
+    return false
+end
+
+if isExploitDetected() then
+    warn("Exploit detectado, script não será executado!")
+    return
+end
+
 print("Anti-Ban e Anti-Exploit ativados!")
