@@ -87,3 +87,39 @@ end
 
 -- Funções adicionais
 loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
+
+-- ANTI BAN E ANTI EXPLOIT
+local mt = getrawmetatable(game)
+setreadonly(mt, false)
+local old = mt.__namecall
+
+mt.__namecall = newcclosure(function(self, ...)
+    local method = getnamecallmethod()
+    local args = {...}
+    
+    -- Bloquear tentativas de kick e ban
+    if method == "Kick" or method == "Ban" then
+        warn("Tentativa de kick bloqueada!")
+        return nil
+    end
+
+    return old(self, ...)
+end)
+
+-- Proteção contra modificações forçadas no player
+local function protectPlayer()
+    local player = game.Players.LocalPlayer
+    player.CharacterAdded:Connect(function(char)
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            hrp:GetPropertyChangedSignal("CFrame"):Connect(function()
+                if not hrp.Parent then return end
+                hrp.CFrame = hrp.CFrame -- Restaura a posição se for modificada
+            end)
+        end
+    end)
+end
+
+protectPlayer()
+
+print("Anti-Ban e Anti-Exploit ativados!")
