@@ -1,172 +1,234 @@
--- SONIC MENU PAGO
--- Créditos: SACOLA E TIGRINHO
+--[[
+    Sonic Menu • Feito por PIXOTE
+    Abas: Início, Combate, Anti-Ban
+    Adicionado: NoClip, Auto CL
+--]]
 
-local SonicMenu = Instance.new("ScreenGui")
-local MainFrame = Instance.new("Frame")
-local MinimizeButton = Instance.new("TextButton")
-local OpenButton = Instance.new("TextButton")
-local ButtonsFrame = Instance.new("Frame")
-local FunctionsFrame = Instance.new("Frame")
-local FunctionsTitle = Instance.new("TextLabel")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local TweenService = game:GetService("TweenService")
+local HttpService = game:GetService("HttpService")
+local RunService = game:GetService("RunService")
+local gui = Instance.new("ScreenGui", game.CoreGui)
+gui.Name = "SonicMenu"
 
--- Configuração do painel movível
-SonicMenu.Parent = game.CoreGui
-MainFrame.Parent = SonicMenu
-MainFrame.Size = UDim2.new(0, 300, 0, 500)  -- Aumentei o tamanho do painel para acomodar mais botões
-MainFrame.Position = UDim2.new(0.5, -150, 0.5, -250)  -- Ajustei a posição para ficar mais centralizado
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-MainFrame.Draggable = true
-MainFrame.Active = true
-MainFrame.Selectable = true
+-- Sistema de Key
+local keyFrame = Instance.new("Frame", gui)
+keyFrame.Size = UDim2.new(0, 300, 0, 150)
+keyFrame.Position = UDim2.new(0.5, -150, 0.5, -75)
+keyFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+keyFrame.BorderSizePixel = 0
+keyFrame.Active = true
+keyFrame.Draggable = true
 
-MinimizeButton.Parent = MainFrame
-MinimizeButton.Size = UDim2.new(0, 50, 0, 25)
-MinimizeButton.Position = UDim2.new(1, -55, 0, 5)
-MinimizeButton.Text = "-"
-MinimizeButton.MouseButton1Click:Connect(function()
-    ButtonsFrame.Visible = not ButtonsFrame.Visible
-    FunctionsFrame.Visible = not FunctionsFrame.Visible
-end)
+local title = Instance.new("TextLabel", keyFrame)
+title.Size = UDim2.new(1, 0, 0, 30)
+title.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+title.Text = "SONIC MENU - DIGITE A KEY"
+title.TextColor3 = Color3.new(1,1,1)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 14
 
-ButtonsFrame.Parent = MainFrame
-ButtonsFrame.Size = UDim2.new(1, 0, 0.5, -30)
-ButtonsFrame.Position = UDim2.new(0, 0, 0, 30)
-ButtonsFrame.BackgroundTransparency = 1
+local keyBox = Instance.new("TextBox", keyFrame)
+keyBox.Size = UDim2.new(0.8, 0, 0, 30)
+keyBox.Position = UDim2.new(0.1, 0, 0.5, -15)
+keyBox.PlaceholderText = "Digite a key (123)"
+keyBox.Text = ""
+keyBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+keyBox.TextColor3 = Color3.new(1,1,1)
+keyBox.Font = Enum.Font.Gotham
+keyBox.TextSize = 14
 
-FunctionsFrame.Parent = MainFrame
-FunctionsFrame.Size = UDim2.new(1, 0, 0.5, -30)
-FunctionsFrame.Position = UDim2.new(0, 0, 0.5, 0)
-FunctionsFrame.BackgroundTransparency = 1
+local keyBtn = Instance.new("TextButton", keyFrame)
+keyBtn.Size = UDim2.new(0.6, 0, 0, 30)
+keyBtn.Position = UDim2.new(0.2, 0, 0.75, 0)
+keyBtn.Text = "ENTRAR"
+keyBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+keyBtn.TextColor3 = Color3.new(1, 1, 1)
+keyBtn.Font = Enum.Font.GothamBold
+keyBtn.TextSize = 14
 
-FunctionsTitle.Parent = FunctionsFrame
-FunctionsTitle.Size = UDim2.new(1, 0, 0, 30)
-FunctionsTitle.Position = UDim2.new(0, 0, 0, 0)
-FunctionsTitle.Text = "Funções"
-FunctionsTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-FunctionsTitle.BackgroundTransparency = 1
+keyBtn.MouseButton1Click:Connect(function()
+    if keyBox.Text == "123" then
+        keyFrame:Destroy()
 
--- Função para teleporte
-local function teleport(x, y, z)
-    local player = game.Players.LocalPlayer
-    if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-        player.Character.HumanoidRootPart.CFrame = CFrame.new(x, y, z)
-    end
-end
+        local menu = Instance.new("Frame", gui)
+        menu.Size = UDim2.new(0, 500, 0, 320)
+        menu.Position = UDim2.new(0.5, -250, 0.5, -160)
+        menu.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+        menu.BorderSizePixel = 0
+        menu.Active = true
+        menu.Draggable = true
 
--- Criando botões para teleportes
-local locations = {
-    {"Prédio", -1888.3, 4.8, 377.2},
-    {"Casa Pescaria", -1205.7, 79.1, -391.0},
-    {"Gas/Lixo", -441.9, 5.3, -31.0},
-    {"Fazenda", 778.8, 4.8, -101.1},
-    {"PM", -839.3, 12.2, 459.0},
-    {"Praça", -287.4, 4.8, 338.5},
-    {"Plantas", 12022.6, 27.3, 12796.3},
-    {"Lavagem", 19830.8, 66.5, 13142.8}
-}
+        local top = Instance.new("TextLabel", menu)
+        top.Size = UDim2.new(1, 0, 0, 30)
+        top.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        top.Text = "SONIC MENU • Feito por PIXOTE"
+        top.TextColor3 = Color3.new(1, 1, 1)
+        top.Font = Enum.Font.GothamBold
+        top.TextSize = 14
 
-for _, loc in pairs(locations) do
-    local button = Instance.new("TextButton")
-    button.Text = loc[1]
-    button.Size = UDim2.new(1, 0, 0, 30)
-    button.Parent = ButtonsFrame
-    button.MouseButton1Click:Connect(function()
-        teleport(loc[2], loc[3], loc[4])
-    end)
-end
+        local tabs = {"Início", "Combate", "Anti-Ban"}
+        local tabButtons = {}
+        local tabFrames = {}
 
--- Criando botões para funções
-local functions = {
-    {"Velocidade", function() 
-        -- Coloque aqui a lógica para aumentar a velocidade do jogador
-        print("Função Velocidade ativada!")
-    end},
-    {"ESP Nome", function() 
-        -- Coloque aqui a lógica do ESP para nome de jogadores
-        print("Função ESP Nome ativada!")
-    end},
-    {"ESP Pessoas", function() 
-        -- Coloque aqui a lógica para ESP de pessoas no jogo
-        print("Função ESP Pessoas ativada!")
-    end},
-    {"No Clip", function() 
-        -- Coloque aqui a lógica para permitir No Clip
-        print("Função No Clip ativada!")
-    end},
-    {"Hit Box", function() 
-        -- Coloque aqui a lógica para modificar o hitbox
-        print("Função Hit Box ativada!")
-    end},
-    {"CL", function() 
-        -- Coloque aqui a lógica para o CL (ou o que seja)
-        print("Função CL ativada!")
-    end},
-    {"Teleporte Player", function() 
-        -- Coloque aqui a lógica para teletransportar outro jogador
-        print("Função Teleporte Player ativada!")
-    end}
-}
+        for i, tabName in ipairs(tabs) do
+            local tabBtn = Instance.new("TextButton", menu)
+            tabBtn.Size = UDim2.new(0, 160, 0, 25)
+            tabBtn.Position = UDim2.new(0, (i-1)*165 + 5, 0, 35)
+            tabBtn.Text = tabName
+            tabBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            tabBtn.TextColor3 = Color3.new(1, 1, 1)
+            tabBtn.Font = Enum.Font.GothamBold
+            tabBtn.TextSize = 12
+            tabButtons[tabName] = tabBtn
 
-for _, func in pairs(functions) do
-    local button = Instance.new("TextButton")
-    button.Text = func[1]
-    button.Size = UDim2.new(1, 0, 0, 30)
-    button.Parent = FunctionsFrame
-    button.MouseButton1Click:Connect(func[2])
-end
+            local content = Instance.new("Frame", menu)
+            content.Position = UDim2.new(0, 10, 0, 70)
+            content.Size = UDim2.new(1, -20, 1, -80)
+            content.BackgroundTransparency = 1
+            content.Visible = (tabName == "Início")
+            tabFrames[tabName] = content
 
--- Funções adicionais
-loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
-
--- ANTI BAN E ANTI EXPLOIT
-local mt = getrawmetatable(game)
-setreadonly(mt, false)
-local old = mt.__namecall
-
-mt.__namecall = newcclosure(function(self, ...)
-    local method = getnamecallmethod()
-    local args = {...}
-    
-    -- Bloquear tentativas de kick e ban
-    if method == "Kick" or method == "Ban" then
-        warn("Tentativa de kick bloqueada!")
-        return nil
-    end
-
-    return old(self, ...)
-end)
-
--- Proteção contra modificações forçadas no player
-local function protectPlayer()
-    local player = game.Players.LocalPlayer
-    player.CharacterAdded:Connect(function(char)
-        local hrp = char:FindFirstChild("HumanoidRootPart")
-        if hrp then
-            hrp:GetPropertyChangedSignal("CFrame"):Connect(function()
-                if not hrp.Parent then return end
-                hrp.CFrame = hrp.CFrame -- Restaura a posição se for modificada
+            tabBtn.MouseButton1Click:Connect(function()
+                for _, frame in pairs(tabFrames) do
+                    frame.Visible = false
+                end
+                tabFrames[tabName].Visible = true
             end)
         end
-    end)
-end
 
-protectPlayer()
+        local function createButton(parent, text, callback)
+            local btn = Instance.new("TextButton", parent)
+            btn.Size = UDim2.new(0, 200, 0, 30)
+            btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            btn.TextColor3 = Color3.new(1, 1, 1)
+            btn.Font = Enum.Font.GothamBold
+            btn.TextSize = 12
+            btn.Text = text
+            btn.MouseButton1Click:Connect(callback)
+            return btn
+        end
 
--- Proteção contra exploits no ambiente de execução
-local function isExploitDetected()
-    -- Verificação simples para verificar se há sinais típicos de exploit (ex: funções do "getfenv" ou outros sinais)
-    local success, err = pcall(function()
-        return game:GetService("HttpService"):GetAsync("https://www.google.com")
-    end)
-    if not success then
-        return true
+        -- INÍCIO
+        local info = Instance.new("TextLabel", tabFrames["Início"])
+        info.Size = UDim2.new(1, 0, 0, 30)
+        info.Text = "Usuário: " .. LocalPlayer.Name
+        info.TextColor3 = Color3.new(1, 1, 1)
+        info.BackgroundTransparency = 1
+        info.Font = Enum.Font.Gotham
+        info.TextSize = 14
+
+        -- COMBATE
+        local layoutCombat = Instance.new("UIListLayout", tabFrames["Combate"])
+        layoutCombat.Padding = UDim.new(0, 5)
+
+        createButton(tabFrames["Combate"], "Ativar Hitbox", function()
+            for _, v in pairs(Players:GetPlayers()) do
+                if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+                    v.Character.HumanoidRootPart.Size = Vector3.new(20, 20, 20)
+                    v.Character.HumanoidRootPart.Transparency = 0.5
+                end
+            end
+        end)
+
+        createButton(tabFrames["Combate"], "ESP Nomes", function()
+            for _, plr in pairs(Players:GetPlayers()) do
+                if plr ~= LocalPlayer then
+                    local billboard = Instance.new("BillboardGui", plr.Character:WaitForChild("Head"))
+                    billboard.Size = UDim2.new(0, 100, 0, 40)
+                    billboard.AlwaysOnTop = true
+
+                    local label = Instance.new("TextLabel", billboard)
+                    label.Size = UDim2.new(1, 0, 1, 0)
+                    label.BackgroundTransparency = 1
+                    label.TextColor3 = Color3.new(1, 1, 1)
+                    label.Text = plr.Name
+                    label.Font = Enum.Font.GothamBold
+                    label.TextSize = 12
+                end
+            end
+        end)
+
+        createButton(tabFrames["Combate"], "Teleporte até jogador", function()
+            local listGui = Instance.new("Frame", gui)
+            listGui.Size = UDim2.new(0, 200, 0, 250)
+            listGui.Position = UDim2.new(1, -210, 0.5, -125)
+            listGui.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+            listGui.Active = true
+            listGui.Draggable = true
+
+            local layout = Instance.new("UIListLayout", listGui)
+            layout.Padding = UDim.new(0, 4)
+
+            for _, p in pairs(Players:GetPlayers()) do
+                if p ~= LocalPlayer then
+                    local btn = Instance.new("TextButton", listGui)
+                    btn.Size = UDim2.new(1, 0, 0, 30)
+                    btn.Text = p.Name
+                    btn.TextColor3 = Color3.new(1,1,1)
+                    btn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+                    btn.Font = Enum.Font.Gotham
+                    btn.TextSize = 12
+                    btn.MouseButton1Click:Connect(function()
+                        if p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                            LocalPlayer.Character:MoveTo(p.Character.HumanoidRootPart.Position + Vector3.new(2, 0, 2))
+                        end
+                    end)
+                end
+            end
+        end)
+
+        createButton(tabFrames["Combate"], "Ativar NoClip", function()
+            local noclip = true
+            RunService.Stepped:Connect(function()
+                if noclip and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    for _, v in pairs(LocalPlayer.Character:GetDescendants()) do
+                        if v:IsA("BasePart") and v.CanCollide then
+                            v.CanCollide = false
+                        end
+                    end
+                end
+            end)
+        end)
+
+        createButton(tabFrames["Combate"], "Ativar Auto CL", function()
+            if LocalPlayer.Character:FindFirstChild("Humanoid") then
+                LocalPlayer.Character.Humanoid.Died:Connect(function()
+                    LocalPlayer:Kick("Você morreu (Auto CL Ativado).")
+                end)
+            end
+        end)
+
+        -- ANTI-BAN
+        local layoutProtect = Instance.new("UIListLayout", tabFrames["Anti-Ban"])
+        layoutProtect.Padding = UDim.new(0, 5)
+
+        createButton(tabFrames["Anti-Ban"], "Notificar se Staff entrar", function()
+            Players.PlayerAdded:Connect(function(player)
+                if string.find(player.Name:lower(), "staff") or string.find(player:GetRoleInGroup(1):lower(), "admin") then
+                    game.StarterGui:SetCore("SendNotification", {
+                        Title = "Alerta Staff!",
+                        Text = player.Name.." entrou!",
+                        Duration = 5
+                    })
+                end
+            end)
+        end)
+
+        createButton(tabFrames["Anti-Ban"], "Detectar Staff Próximo", function()
+            for _, p in pairs(Players:GetPlayers()) do
+                if p ~= LocalPlayer and (string.find(p.Name:lower(), "staff") or string.find(p:GetRoleInGroup(1):lower(), "admin")) then
+                    if p.Character and LocalPlayer.Character then
+                        local dist = (p.Character.HumanoidRootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+                        game.StarterGui:SetCore("SendNotification", {
+                            Title = "Staff por perto!",
+                            Text = "Distância: " .. math.floor(dist),
+                            Duration = 5
+                        })
+                    end
+                end
+            end
+        end)
     end
-    return false
-end
-
-if isExploitDetected() then
-    warn("Exploit detectado, script não será executado!")
-    return
-end
-
-print("Anti-Ban e Anti-Exploit ativados!")
+end)
