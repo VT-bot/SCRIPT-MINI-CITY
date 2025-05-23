@@ -132,6 +132,38 @@ keyBtn.MouseButton1Click:Connect(function()
             end
         end)
 
+createButton(tabFrames["Combate"], "ESP Inventário", function()
+    for _, plr in pairs(Players:GetPlayers()) do
+        if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("Head") then
+            local billboard = Instance.new("BillboardGui", plr.Character.Head)
+            billboard.Size = UDim2.new(0, 120, 0, 40)
+            billboard.AlwaysOnTop = true
+
+            local label = Instance.new("TextLabel", billboard)
+            label.Size = UDim2.new(1, 0, 1, 0)
+            label.BackgroundTransparency = 1
+            label.TextColor3 = Color3.new(1, 1, 1)
+            label.Font = Enum.Font.GothamBold
+            label.TextSize = 12
+            label.Text = "Carregando..."
+
+            -- Atualizar nome do item segurado
+            task.spawn(function()
+                while billboard.Parent and plr.Character do
+                    local tool = plr:FindFirstChildOfClass("Backpack") and plr.Backpack:FindFirstChildWhichIsA("Tool")
+                    if plr.Character:FindFirstChildOfClass("Tool") then
+                        label.Text = "Mão: " .. plr.Character:FindFirstChildOfClass("Tool").Name
+                    elseif tool then
+                        label.Text = "Mochila: " .. tool.Name
+                    else
+                        label.Text = "Nada equipado"
+                    end
+                    task.wait(1)
+                end
+            end)
+        end
+    end
+end)
         createButton(tabFrames["Combate"], "ESP Nomes", function()
             for _, plr in pairs(Players:GetPlayers()) do
                 if plr ~= LocalPlayer then
