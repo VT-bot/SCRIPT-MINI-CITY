@@ -182,35 +182,9 @@ end)
             end
         end)
 
-        createButton(tabFrames["Combate"], "Teleporte até jogador", function()
-            local listGui = Instance.new("Frame", gui)
-            listGui.Size = UDim2.new(0, 200, 0, 250)
-            listGui.Position = UDim2.new(1, -210, 0.5, -125)
-            listGui.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-            listGui.Active = true
-            listGui.Draggable = true
-
-            local layout = Instance.new("UIListLayout", listGui)
-            layout.Padding = UDim.new(0, 4)
-
-            for _, p in pairs(Players:GetPlayers()) do
-                if p ~= LocalPlayer then
-                    local btn = Instance.new("TextButton", listGui)
-                    btn.Size = UDim2.new(1, 0, 0, 30)
-                    btn.Text = p.Name
-                    btn.TextColor3 = Color3.new(1,1,1)
-                    btn.BackgroundColor3 = Color3.fromRGB(60,60,60)
-                    btn.Font = Enum.Font.Gotham
-                    btn.TextSize = 12
-                    btn.MouseButton1Click:Connect(function()
-                        if p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                            LocalPlayer.Character:MoveTo(p.Character.HumanoidRootPart.Position + Vector3.new(2, 0, 2))
-                        end
-                    end)
-                end
-            end
-        end)
-
+        createButton(tabFrames["Combate"], "Auto Roubar", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/VT-bot/auto-roubar-/refs/heads/main/README.md"))()
+end)
         createButton(tabFrames["Combate"], "Ativar NoClip", function()
             local noclip = true
             RunService.Stepped:Connect(function()
