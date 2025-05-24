@@ -1,18 +1,15 @@
---[[
-    Sonic Menu • Feito por PIXOTE
-    Abas: Início, Combate, Anti-Ban
-    Adicionado: NoClip, Auto CL
---]]
-
+-- Sonic Menu • Feito por PIXOTE
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local TweenService = game:GetService("TweenService")
 local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
-local gui = Instance.new("ScreenGui", game.CoreGui)
-gui.Name = "SonicMenu"
 
--- Sistema de Key
+-- Criar GUI principal
+local gui = Instance.new("ScreenGui", game.CoreGui)
+gui.Name = "MenuSonic"
+
+-- Frame da Key
 local keyFrame = Instance.new("Frame", gui)
 keyFrame.Size = UDim2.new(0, 300, 0, 150)
 keyFrame.Position = UDim2.new(0.5, -150, 0.5, -75)
@@ -21,21 +18,21 @@ keyFrame.BorderSizePixel = 0
 keyFrame.Active = true
 keyFrame.Draggable = true
 
-local title = Instance.new("TextLabel", keyFrame)
-title.Size = UDim2.new(1, 0, 0, 30)
-title.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-title.Text = "SONIC MENU - DIGITE A KEY"
-title.TextColor3 = Color3.new(1,1,1)
-title.Font = Enum.Font.GothamBold
-title.TextSize = 14
+local titulo = Instance.new("TextLabel", keyFrame)
+titulo.Size = UDim2.new(1, 0, 0, 30)
+titulo.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+titulo.Text = "MENU SONIC - DIGITE UMA CHAVE"
+titulo.TextColor3 = Color3.new(1, 1, 1)
+titulo.Font = Enum.Font.GothamBold
+titulo.TextSize = 14
 
 local keyBox = Instance.new("TextBox", keyFrame)
 keyBox.Size = UDim2.new(0.8, 0, 0, 30)
 keyBox.Position = UDim2.new(0.1, 0, 0.5, -15)
-keyBox.PlaceholderText = "Digite a key (123)"
+keyBox.PlaceholderText = "Digite uma chave ()"
 keyBox.Text = ""
 keyBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-keyBox.TextColor3 = Color3.new(1,1,1)
+keyBox.TextColor3 = Color3.new(1, 1, 1)
 keyBox.Font = Enum.Font.Gotham
 keyBox.TextSize = 14
 
@@ -48,6 +45,7 @@ keyBtn.TextColor3 = Color3.new(1, 1, 1)
 keyBtn.Font = Enum.Font.GothamBold
 keyBtn.TextSize = 14
 
+-- Função do botão de entrada
 keyBtn.MouseButton1Click:Connect(function()
     if keyBox.Text == "123" then
         keyFrame:Destroy()
@@ -68,14 +66,14 @@ keyBtn.MouseButton1Click:Connect(function()
         top.Font = Enum.Font.GothamBold
         top.TextSize = 14
 
-        local tabs = {"Início", "Combate", "Anti-Ban"}
+        local tabs = {"Início", "Combate", "Teleportes"}
         local tabButtons = {}
         local tabFrames = {}
 
         for i, tabName in ipairs(tabs) do
             local tabBtn = Instance.new("TextButton", menu)
             tabBtn.Size = UDim2.new(0, 160, 0, 25)
-            tabBtn.Position = UDim2.new(0, (i-1)*165 + 5, 0, 35)
+            tabBtn.Position = UDim2.new(0, (i - 1) * 165 + 5, 0, 35)
             tabBtn.Text = tabName
             tabBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             tabBtn.TextColor3 = Color3.new(1, 1, 1)
@@ -94,7 +92,7 @@ keyBtn.MouseButton1Click:Connect(function()
                 for _, frame in pairs(tabFrames) do
                     frame.Visible = false
                 end
-                tabFrames[tabName].Visible = true
+                content.Visible = true
             end)
         end
 
@@ -132,41 +130,41 @@ keyBtn.MouseButton1Click:Connect(function()
             end
         end)
 
-createButton(tabFrames["Combate"], "ESP Inventário", function()
-    for _, plr in pairs(Players:GetPlayers()) do
-        if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("Head") then
-            local billboard = Instance.new("BillboardGui", plr.Character.Head)
-            billboard.Size = UDim2.new(0, 120, 0, 40)
-            billboard.AlwaysOnTop = true
-
-            local label = Instance.new("TextLabel", billboard)
-            label.Size = UDim2.new(1, 0, 1, 0)
-            label.BackgroundTransparency = 1
-            label.TextColor3 = Color3.new(1, 1, 1)
-            label.Font = Enum.Font.GothamBold
-            label.TextSize = 12
-            label.Text = "Carregando..."
-
-            -- Atualizar nome do item segurado
-            task.spawn(function()
-                while billboard.Parent and plr.Character do
-                    local tool = plr:FindFirstChildOfClass("Backpack") and plr.Backpack:FindFirstChildWhichIsA("Tool")
-                    if plr.Character:FindFirstChildOfClass("Tool") then
-                        label.Text = "Mão: " .. plr.Character:FindFirstChildOfClass("Tool").Name
-                    elseif tool then
-                        label.Text = "Mochila: " .. tool.Name
-                    else
-                        label.Text = "Nada equipado"
-                    end
-                    task.wait(1)
-                end
-            end)
-        end
-    end
-end)
-        createButton(tabFrames["Combate"], "ESP Nomes", function()
+        createButton(tabFrames["Combate"], "ESP Inventário", function()
             for _, plr in pairs(Players:GetPlayers()) do
-                if plr ~= LocalPlayer then
+                if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("Head") then
+                    local billboard = Instance.new("BillboardGui", plr.Character.Head)
+                    billboard.Size = UDim2.new(0, 120, 0, 40)
+                    billboard.AlwaysOnTop = true
+
+                    local label = Instance.new("TextLabel", billboard)
+                    label.Size = UDim2.new(1, 0, 1, 0)
+                    label.BackgroundTransparency = 1
+                    label.TextColor3 = Color3.new(1, 1, 1)
+                    label.Font = Enum.Font.GothamBold
+                    label.TextSize = 12
+                    label.Text = "Carregando..."
+
+                    task.spawn(function()
+                        while billboard.Parent and plr.Character do
+                            local tool = plr:FindFirstChildOfClass("Backpack") and plr.Backpack:FindFirstChildWhichIsA("Tool")
+                            if plr.Character:FindFirstChildOfClass("Tool") then
+                                label.Text = "Mão: " .. plr.Character:FindFirstChildOfClass("Tool").Name
+                            elseif tool then
+                                label.Text = "Mochila: " .. tool.Name
+                            else
+                                label.Text = "Nada equipado"
+                            end
+                            task.wait(1)
+                        end
+                    end)
+                end
+            end
+        end)
+
+        createButton(tabFrames["Combate"], "Nomes ESP", function()
+            for _, plr in pairs(Players:GetPlayers()) do
+                if plr ~= LocalPlayer and plr.Character then
                     local billboard = Instance.new("BillboardGui", plr.Character:WaitForChild("Head"))
                     billboard.Size = UDim2.new(0, 100, 0, 40)
                     billboard.AlwaysOnTop = true
@@ -183,8 +181,9 @@ end)
         end)
 
         createButton(tabFrames["Combate"], "Auto Roubar", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/VT-bot/auto-roubar-/refs/heads/main/README.md"))()
-end)
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/VT-bot/auto-roubar-/refs/heads/main/README.md"))()
+        end)
+
         createButton(tabFrames["Combate"], "Ativar NoClip", function()
             local noclip = true
             RunService.Stepped:Connect(function()
@@ -198,45 +197,15 @@ end)
             end)
         end)
 
-createButton(tabFrames["Combate"], "Ativar Aimbot", function()
-    loadstring(game:HttpGet("https://gist.githubusercontent.com/Aimboter477387/582af6aec49782899d5d375ab239039e/raw/51b6ddf5dc74731a24f912134061f150b6f6b316/gistfile1.txt"))()
-end)
-        createButton(tabFrames["Combate"], "Ativar Auto CL", function()
+        createButton(tabFrames["Combate"], "Ativar Aimbot", function()
+            loadstring(game:HttpGet("https://gist.githubusercontent.com/Aimboter477387/582af6aec49782899d5d375ab239039e/raw/51b6ddf5dc74731a24f912134061f150b6f6b316/gistfile1.txt"))()
+        end)
+
+        createButton(tabFrames["Combate"], "Ativar CL Automático", function()
             if LocalPlayer.Character:FindFirstChild("Humanoid") then
                 LocalPlayer.Character.Humanoid.Died:Connect(function()
-                    LocalPlayer:Kick("Você morreu (Auto CL Ativado).")
+                    LocalPlayer:Kick("Você morreu (CL Automático Ativado).")
                 end)
-            end
-        end)
-
-        -- ANTI-BAN
-        local layoutProtect = Instance.new("UIListLayout", tabFrames["Anti-Ban"])
-        layoutProtect.Padding = UDim.new(0, 5)
-
-        createButton(tabFrames["Anti-Ban"], "Notificar se Staff entrar", function()
-            Players.PlayerAdded:Connect(function(player)
-                if string.find(player.Name:lower(), "staff") or string.find(player:GetRoleInGroup(1):lower(), "admin") then
-                    game.StarterGui:SetCore("SendNotification", {
-                        Title = "Alerta Staff!",
-                        Text = player.Name.." entrou!",
-                        Duration = 5
-                    })
-                end
-            end)
-        end)
-
-        createButton(tabFrames["Anti-Ban"], "Detectar Staff Próximo", function()
-            for _, p in pairs(Players:GetPlayers()) do
-                if p ~= LocalPlayer and (string.find(p.Name:lower(), "staff") or string.find(p:GetRoleInGroup(1):lower(), "admin")) then
-                    if p.Character and LocalPlayer.Character then
-                        local dist = (p.Character.HumanoidRootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-                        game.StarterGui:SetCore("SendNotification", {
-                            Title = "Staff por perto!",
-                            Text = "Distância: " .. math.floor(dist),
-                            Duration = 5
-                        })
-                    end
-                end
             end
         end)
     end
