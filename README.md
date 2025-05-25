@@ -3,14 +3,12 @@ local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 
 -- Sistema de Key
 local MenuLiberado = false
-local KeyCorreta = "123"
+local KeyCorreta = "157"
 
 local KeyGUI = Rayfield:CreateWindow({
     Name = "MENU HACK - Sistema de Key",
     LoadingTitle = "Verificando Key...",
-    ConfigurationSaving = {
-        Enabled = false
-    }
+    ConfigurationSaving = { Enabled = false }
 })
 
 local KeyTab = KeyGUI:CreateTab("Key", 4483362458)
@@ -41,7 +39,7 @@ KeyTab:CreateInput({
 
 repeat wait() until MenuLiberado
 
--- Início do menu principal
+-- Menu Principal
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
@@ -61,9 +59,7 @@ local Janela = Rayfield:CreateWindow({
     Name = "MENU HACK - Feito por PIXOTE",
     LoadingTitle = "Carregando...",
     LoadingSubtitle = "Bem-vindo!",
-    ConfigurationSaving = {
-        Enabled = false
-    }
+    ConfigurationSaving = { Enabled = false }
 })
 
 -- Aba Início
@@ -74,10 +70,36 @@ Inicio:CreateParagraph({Title = "Bem-vindo, "..LocalPlayer.Name, Content = "SEJA
 local Combate = Janela:CreateTab("Combate", 4483362458)
 
 Combate:CreateToggle({
-    Name = "Hitbox",
+    Name = "Hitbox (nos outros jogadores)",
     CurrentValue = false,
     Callback = function(Value)
-        -- sua lógica aqui
+        if Value then
+            for _, p in ipairs(Players:GetPlayers()) do
+                if p ~= LocalPlayer and p.Character then
+                    for _, part in ipairs(p.Character:GetDescendants()) do
+                        if part:IsA("BasePart") then
+                            part.Size = Vector3.new(10, 10, 10)
+                            part.Transparency = 0.7
+                            part.BrickColor = BrickColor.new("Bright red")
+                            part.Material = Enum.Material.Neon
+                        end
+                    end
+                end
+            end
+        else
+            for _, p in ipairs(Players:GetPlayers()) do
+                if p ~= LocalPlayer and p.Character then
+                    for _, part in ipairs(p.Character:GetDescendants()) do
+                        if part:IsA("BasePart") then
+                            part.Size = Vector3.new(2, 2, 1)
+                            part.Transparency = 0
+                            part.BrickColor = BrickColor.new("Medium stone grey")
+                            part.Material = Enum.Material.Plastic
+                        end
+                    end
+                end
+            end
+        end
     end
 })
 
@@ -86,7 +108,7 @@ Combate:CreateToggle({
     CurrentValue = false,
     Callback = function(Value)
         game:GetService("RunService").Stepped:Connect(function()
-            if Value then
+            if Value and LocalPlayer.Character then
                 for _, v in pairs(LocalPlayer.Character:GetDescendants()) do
                     if v:IsA("BasePart") then
                         v.CanCollide = false
@@ -149,7 +171,9 @@ Combate:CreateToggle({
 -- Aba Teleportes
 local Teleportes = Janela:CreateTab("Teleportes", 4483362458)
 local function tp(pos)
-    LocalPlayer.Character:MoveTo(pos)
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        LocalPlayer.Character:MoveTo(pos)
+    end
 end
 
 Teleportes:CreateButton({Name = "Praça", Callback = function() tp(Vector3.new(-289.2, 4.8, 331.1)) end})
@@ -160,39 +184,66 @@ Teleportes:CreateButton({Name = "Ilegal", Callback = function() tp(Vector3.new(1
 
 -- Aba Outros
 local Outros = Janela:CreateTab("Outros", 4483362458)
-
-local dropdown
 local playerList = {}
-
-local function updateDropdown()
-    playerList = {}
-    for _, p in ipairs(Players:GetPlayers()) do
-        if p ~= LocalPlayer then
-            table.insert(playerList, p.Name)
-        end
-    end
-    if dropdown then
-        dropdown:SetOptions(playerList)
+for _, p in ipairs(Players:GetPlayers()) do
+    if p ~= LocalPlayer then
+        table.insert(playerList, p.Name)
     end
 end
 
-task.delay(1, function()
-    updateDropdown()
-    dropdown = Outros:CreateDropdown({
-        Name = "Teleportar para Player",
-        Options = playerList,
-        Callback = function(PlayerName)
-            local p = Players:FindFirstChild(PlayerName)
+local jogadorSelecionado = nil
+
+local dropdown = Outros:CreateDropdown({
+    Name = "Selecionar Jogador para Teleporte",
+    Options = playerList,
+    CurrentOption = "",
+    Callback = function(Value)
+        jogadorSelecionado = Value
+    end
+})
+
+Outros:CreateButton({
+    Name = "Teleportar até Jogador Selecionado",
+    Callback = function()
+        if jogadorSelecionado then
+            local p = Players:FindFirstChild(jogadorSelecionado)
             if p and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
                 tp(p.Character.HumanoidRootPart.Position)
+                Rayfield:Notify({
+                    Title = "Teleporte realizado!",
+                    Content = "Você foi teleportado até " .. jogadorSelecionado,
+                    Duration = 3
+                })
+            else
+                Rayfield:Notify({
+                    Title = "Erro!",
+                    Content = "Jogador inválido ou personagem não carregado.",
+                    Duration = 3
+                })
             end
+        else
+            Rayfield:Notify({
+                Title = "Aviso",
+                Content = "Selecione um jogador antes de teleportar.",
+                Duration = 3
+            })
         end
-    })
+    end
+})
+
+Players.PlayerAdded:Connect(function(player)
+    if player ~= LocalPlayer then
+        table.insert(playerList, player.Name)
+        dropdown:SetOptions(playerList)
+    end
 end)
 
-task.spawn(function()
-    while true do
-        updateDropdown()
-        wait(3)
+Players.PlayerRemoving:Connect(function(player)
+    for i, name in ipairs(playerList) do
+        if name == player.Name then
+            table.remove(playerList, i)
+            break
+        end
     end
+    dropdown:SetOptions(playerList)
 end)
