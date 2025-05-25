@@ -3,7 +3,7 @@ local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 
 -- Sistema de Key
 local MenuLiberado = false
-local KeyCorreta = "157"
+local KeyCorreta = "244"
 
 local KeyGUI = Rayfield:CreateWindow({
     Name = "MENU HACK - Sistema de Key",
